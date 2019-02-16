@@ -15,6 +15,7 @@ namespace multithread {
                 pthread_mutex_init(&mutex_, NULL);
             }
 
+
             ~MutexLock(){
                 pthread_mutex_destroy(&mutex_);
             }
@@ -40,6 +41,8 @@ namespace multithread {
 
 
         private:
+            const MutexLock& operator=(const MutexLock& ot);
+            MutexLock(const MutexLock& lk);
             pthread_mutex_t mutex_;
             pthread_t holder_;
 
@@ -49,8 +52,7 @@ namespace multithread {
     class MutexLockGuard{
 
         public:
-            MutexLockGuard(MutexLock& mtx){
-                mtx_ = mtx;
+            MutexLockGuard(MutexLock& mtx):mtx_(mtx){
                 mtx_.lock();
             }
 
@@ -59,7 +61,8 @@ namespace multithread {
             }
 
         private:
-            MutexLock mtx_;
+            const MutexLockGuard& operator=(const MutexLockGuard& ot);
+            MutexLock& mtx_;
 
 
     };
@@ -67,8 +70,7 @@ namespace multithread {
     class Condition{
 
         public:
-            explicit Condition(MutexLock& mtx){
-                mtx_ = mtx;
+            explicit Condition(MutexLock& mtx):mtx_(mtx){
                 pthread_cond_init(&cond_, NULL);
             }
 
@@ -89,7 +91,9 @@ namespace multithread {
             }
 
         private:
-            MutexLock mtx_;
+            const Condition& operator=(const Condition& ot);
+            Condition(const Condition& cd);
+            MutexLock& mtx_;
             pthread_cond_t cond_;
 
     };

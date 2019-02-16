@@ -5,8 +5,8 @@
 
 using namespace std;
 
-BlockingQueue<std::pair<unsigned long, int> > q(3);
-const int count = 1;
+BlockingQueue<std::pair<unsigned long, int> > q(10);
+const int count = 100;
 
 void* produce(void* args){
     for(int i=0; i<count; i++){
@@ -29,12 +29,13 @@ void* consume(void* args){
 int main(){
     pthread_t pt[count];
     pthread_t ct[count];
-    for(int i=0; i<count; i++){
+    int ths = 5;
+    for(int i=0; i<ths; i++){
         pthread_create(&ct[i], NULL, consume, NULL);
         pthread_create(&pt[i], NULL, produce, NULL);
     }
 
-    for(int i=0; i<count; i++){
+    for(int i=0; i<ths; i++){
         pthread_join(pt[i], NULL);
         pthread_join(ct[i], NULL);
     }
